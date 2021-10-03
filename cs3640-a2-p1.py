@@ -90,7 +90,70 @@ class EmulateNet:
         :param topology_dict: Dictionary containing topology of network to be emulated.
         :return:
         """
+        self.topology_dict = topology_dict
+        topology_dict = {
+  "Notes": "Topology of a very fast (loopy) network. All links are Gigabit, no loss, and 10000 packet queue size",
+  "switches": ["s0", "s1", "s2"],
+  "hosts": ["h00", "h01", "h02", "h10", "h11", "h20", "h21"],
+  "link_params": [
+    {"source":  "h00", "destination": "s0", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h01", "destination": "s0", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h02", "destination": "s0", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h10", "destination": "s1", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h11", "destination": "s1", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h20", "destination": "s2", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h21", "destination": "s2", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "s0", "destination": "s1", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "s1", "destination": "s2", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "s2", "destination": "s0", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "s1", "destination": "h20", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}}
+  ]
+}
+        Topo.__init__(self, hosts, switches, links)
+        
+        h00 = self.addHost('h00')
+        h01 = self.addHost('h01')
+        h02 = self.addHost('h02')
+        h10 = self.addHost('h10')
+        h11 = self.addHost('h11')
+        h20 = self.addHost('h20')
+        h21 = self.addHost('h21')
+           
+        s0 = self.addSwitch('s0')
+        s1 = self.addSwitch('s1')
+        s2 = self.addSwitch('s2')
 
+        self.addLink(h00, s0, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h01, s0, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h02, s0, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h10, s1, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h11, s1, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h20, s2, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h21, s2, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(s0, s1, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(s1, s2, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(s2, s0, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(s1, h20, bw = 1000, loss = 0, max_queue_size = 10000)
+           
+        self.topology = topology
+        topology = {key:value for key, value in topology_dict.items() if (topology_dict.values()).count(value)==1}
+        topology = {
+  "Notes": "Topology of a very fast (loop free) network. All links are Gigabit, no loss, and 10000 packet queue size",
+  "switches": ["s0", "s1", "s2"],
+  "hosts": ["h00", "h01", "h02", "h10", "h11", "h20", "h21"],
+  "link_params": [
+    {"source":  "h00", "destination": "s0", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h01", "destination": "s0", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h02", "destination": "s0", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h10", "destination": "s1", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h11", "destination": "s1", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h20", "destination": "s2", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "h21", "destination": "s2", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "s0", "destination": "s1", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}},
+    {"source":  "s1", "destination": "s2", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}}
+  ]
+}
+           
     def show_topology_characteristics(self):
         """
         Helper function that shows you the topology of your constructed network. Use this to verify the correctness of
