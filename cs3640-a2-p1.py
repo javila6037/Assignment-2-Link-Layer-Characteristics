@@ -91,6 +91,9 @@ class EmulateNet:
         :return:
         """
         self.topology_dict = topology_dict
+        with open('topology_dict_loops.json') as json_file:
+           topology_dict = json.load(json_file)
+           
         topology_dict = {
   "Notes": "Topology of a very fast (loopy) network. All links are Gigabit, no loss, and 10000 packet queue size",
   "switches": ["s0", "s1", "s2"],
@@ -138,8 +141,11 @@ class EmulateNet:
         self.addLink(s2, s0, bw = 1000, loss = 0, max_queue_size = 10000)
         self.addLink(s1, h20, bw = 1000, loss = 0, max_queue_size = 10000)
            
+           
         self.topology = topology
-        topology = {key:value for key, value in topology_dict.items() if (topology_dict.values()).count(value)==1}
+        with open('topology_dict_noloops.json') as json_file:
+           topology = json.load(json_file)
+           
         topology = {
   "Notes": "Topology of a very fast (loop free) network. All links are Gigabit, no loss, and 10000 packet queue size",
   "switches": ["s0", "s1", "s2"],
