@@ -109,6 +109,9 @@ class EmulateNet:
     {"source":  "s1", "destination": "h20", "options": {"bw": 1000, "loss": 0, "max_queue_size": 10000}}
   ]
 }
+
+        EmulateNet(**topology_dict)
+           
         Topo.__init__(self, hosts, switches, links)
         
         h00 = self.addHost('h00')
