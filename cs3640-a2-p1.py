@@ -116,19 +116,19 @@ class EmulateNet:
         self.addLink(s2, s0, bw = 1000, loss = 0, max_queue_size = 10000)
         self.addLink(s1, h20, bw = 1000, loss = 0, max_queue_size = 10000)
 
-       EmulateNet(**topology_dict)
+    EmulateNet(**topology_dict)
 
-       def convert_to_csr(topology_dict):
-           topology_dict_values = topology_dict.values()
-           topology_dict_keys = topology_dict.keys()
-           keys_zip = zip(*topology_dict_keys)
-           keys_zip_list = list(keys_zip)
-           shape = (len(keys_zip_list[0]), len(keys_zip_list[1]))
-           csr = csr_matrix((list(topology_dict_values), list(map(list, keys_zip))), shape = shape)
-           mst_csr = minimum_spanning_tree(csr)
-           return mst_csr
+    def convert_to_csr(topology_dict):
+        topology_dict_values = topology_dict.values()
+        topology_dict_keys = topology_dict.keys()
+        keys_zip = zip(*topology_dict_keys)
+        keys_zip_list = list(keys_zip)
+        shape = (len(keys_zip_list[0]), len(keys_zip_list[1]))
+        csr = csr_matrix((list(topology_dict_values), list(map(list, keys_zip))), shape = shape)
+        mst_csr = minimum_spanning_tree(csr)
+        return mst_csr
 
-        output = convert_to_csr(topology_dict)
+    output = convert_to_csr(topology_dict)
 
            
     def show_topology_characteristics(self):
