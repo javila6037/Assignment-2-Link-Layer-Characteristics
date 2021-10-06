@@ -90,7 +90,47 @@ class EmulateNet:
         :param topology_dict: Dictionary containing topology of network to be emulated.
         :return:
         """
-       
+
+        Topo.__init__(self, **params)
+           
+        h00 = self.addHost('h00')
+        h01 = self.addHost('h01')
+        h02 = self.addHost('h02')
+        h10 = self.addHost('h10')
+        h11 = self.addHost('h11')
+        h20 = self.addHost('h20')
+        h21 = self.addHost('h21')
+           
+        s0 = self.addSwitch('s0')
+        s1 = self.addSwitch('s1')
+        s2 = self.addSwitch('s2')
+
+        self.addLink(h00, s0, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h01, s0, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h02, s0, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h10, s1, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h11, s1, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h20, s2, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(h21, s2, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(s0, s1, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(s1, s2, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(s2, s0, bw = 1000, loss = 0, max_queue_size = 10000)
+        self.addLink(s1, h20, bw = 1000, loss = 0, max_queue_size = 10000)
+
+        EmulateNet(**topology_dict)
+
+        def convert_to_csr(topology_dict):
+           topology_dict_values = topology_dict.values()
+           topology_dict_keys = topology_dict.keys()
+           keys_zip = zip(*topology_dict_keys)
+           keys_zip_list = list(keys_zip)
+           shape = (len(keys_zip_list[0]), len(keys_zip_list[1]))
+           csr = csr_matrix((list(topology_dict_values), list(map(list, keys_zip))), shape = shape)
+           mst_csr = minimum_spanning_tree(csr)
+           return mst_csr
+        
+        self.minimum_spanning_tree = convert_to_csr(topology_dict)
+
            
     def show_topology_characteristics(self):
         """
@@ -111,6 +151,7 @@ class EmulateNet:
         Start Mininet emulation of constructed network
         :return:
         """
+        self.emulated_net.start()
 
     def stop_emulator(self):
         """
@@ -120,7 +161,7 @@ class EmulateNet:
         Stop Mininet emulation
         :return:
         """
-
+        self.emulated_net.stop()
 
 class AnalyzePerformanceCharacteristics:
     """
